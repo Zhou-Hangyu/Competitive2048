@@ -11,7 +11,7 @@ A zero-sum dual-player 2048 variant based on AlphaZero.
 To learn more about this project, please check out this report: assets/CS4701FinalReport.html.
   
 # Quickstart
-Download the model checkpoints from [this link](https://drive.google.com/drive/folders/1yeqRXAnpeF0ix80Jb5DGeXh0nHahIin1?usp=sharing), place the `best_gpu.pth.tar` in the `alphazero/temp_gpu` folder and the `best_cpu.pth.tar` in the `alphazero/temp_cpu` folder.
+Download the model checkpoints from [this link](https://drive.google.com/drive/folders/1yeqRXAnpeF0ix80Jb5DGeXh0nHahIin1?usp=sharing), place the `best_gpu.pth.tar` in the `comp2049/alphazero/temp_gpu` folder and the `best_cpu.pth.tar` in the `comp2049/alphazero/temp_cpu` folder.
 
 Run the following script to install the packages and start the game
 ```bash
