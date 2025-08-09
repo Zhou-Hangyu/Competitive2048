@@ -1,0 +1,41 @@
+# Competitive2048
+Authors: [Hangyu Zhou](https://zhou-hangyu.github.io/), [Yi Liu](https://www.linkedin.com/in/yi-liu-/), [Chenrui Gu](https://www.linkedin.com/in/chenrui-g-995640131/)
+
+A zero-sum dual-player 2048 variant based on AlphaZero.
+
+<p float="left">
+<img src="assets/dodge1.png" alt="Dodging frame 1" width="200"/>
+<img src="assets/dodge2.png" alt="Dodging frame 2" width="200"/>
+<img src="assets/dodge3.png" alt="Dodging frame 3" width="200"/>
+</p>
+To learn more about this project, please check out this report: assets/CS4701FinalReport.html.
+  
+# Quickstart
+Download the model checkpoints from [this link](https://drive.google.com/drive/folders/1yeqRXAnpeF0ix80Jb5DGeXh0nHahIin1?usp=sharing), place the `best_gpu.pth.tar` in the `alphazero/temp_gpu` folder and the `best_cpu.pth.tar` in the `alphazero/temp_cpu` folder.
+
+Run the following script to install the packages and start the game
+```bash
+uv sync
+uv run main.py
+```
+
+# TODO
+- [ ] Parallelize `move()` to speed up training.
+- [ ] Implement stochastic MCTS.
+- [ ] Evaluate model performance against MCTS policy.
+
+# Code References
+General AlphaZero framework. <br />
+Adapted from [Alpha Zero General](https://github.com/suragnair/alpha-zero-general) repository. <br />
+
+- We adapted the framework of the Othello game's environment in the Alpha Zero General repository and implemented all the functions by ourselves based on our game of 2048 (in the env folder). <br />
+
+- We adapted NNet.py from the Alpha Zero General repository and implemented some additional codes to calculate the value loss and pi loss during training. <br />
+
+- We adapted Coach.py from the Alpha Zero General repository and implemented some additional codes to calculate the winning rate of our model when playing against a random player and a greedy player. <br />
+
+- We adapted the other files related to alphazero from the Alpha Zero General repository and made changes to the code so that it works for competitive 2048
+
+UI Implementation <br />
+Adapted from [Create 2048 Game using Python](https://pythongeeks.org/python-2048-game-source-code) website. <br />
+- We adapted the framework of our UI from the above website and implemented all the functions by ourselves based on the logic of our game.
