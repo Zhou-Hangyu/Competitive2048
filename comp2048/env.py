@@ -1,22 +1,23 @@
 from __future__ import print_function
 import sys
 
-sys.path.append('../..')
+sys.path.append("../..")
 from comp2048.alphazero.Game import Game
 import numpy as np
 import torch
 
 
 class Comp2048Game(Game):
-    def __init__(self, n=4, seed=0, device='cpu'):
+    def __init__(self, n=4, seed=0, device="cpu"):
         self.n = n
         self.device = device
         self.seed = seed
 
     def getInitBoard(self):
         # return initial board (torch board) and score
-        return Comp2048Board(self.n, seed=self.seed, device=self.device).board, \
-                     torch.zeros(2, device=self.device)
+        return Comp2048Board(
+            self.n, seed=self.seed, device=self.device
+        ).board, torch.zeros(2, device=self.device)
 
     def getBoardSize(self):
         # (a,b) tuple
@@ -61,13 +62,13 @@ class Comp2048Game(Game):
 
     def getCanonicalForm(self, board, player):
         # return player * board
-        return board # FIXME: in 2048 there is only one kind of board, no need to flip the board.
+        return board  # FIXME: in 2048 there is only one kind of board, no need to flip the board.
 
     def getSymmetries(self, board, pi):
         # mirror, rotational
-        assert (len(pi) == self.n ** 2 + 1)  # 1 for pass
+        assert len(pi) == self.n**2 + 1  # 1 for pass
         pi_board = np.reshape(pi[:-1], (self.n, self.n))
-        l = []
+        symmetries = []
 
         for i in range(1, 5):
             for j in [True, False]:
@@ -76,8 +77,8 @@ class Comp2048Game(Game):
                 if j:
                     newB = np.fliplr(newB)
                     newPi = np.fliplr(newPi)
-                l += [(newB, list(newPi.ravel()) + [pi[-1]])]
-        return l
+                symmetries.append((newB, list(newPi.ravel()) + [pi[-1]]))
+        return symmetries
 
     def stringRepresentation(self, board):
         return board.cpu().numpy().tostring()
@@ -120,15 +121,18 @@ class Comp2048Game(Game):
 
         print("-----------------------")
 
-class Comp2048Board():
-    def __init__(self, size=4, seed=None, device='cpu'):
+
+class Comp2048Board:
+    def __init__(self, size=4, seed=None, device="cpu"):
         "Set up initial board configuration."
         self.seed = seed
         self.device = device
-        if self.seed == None:
+        if self.seed is None:
             self.generator = torch.Generator(device=device)  # random generator
         else:
-            self.generator = torch.Generator(device=device).manual_seed(self.seed)  # random generator
+            self.generator = torch.Generator(device=device).manual_seed(
+                self.seed
+            )  # random generator
 
         # Create the empty board array.
         self.board = torch.zeros((size, size), device=self.device)
@@ -151,7 +155,9 @@ class Comp2048Board():
     def add_random_tile(self):
         # randomly select an empty tile
         indices = torch.argwhere(self.board == 0)
-        random_index = torch.randperm(indices.shape[0], generator=self.generator, device=self.device)[0]
+        random_index = torch.randperm(
+            indices.shape[0], generator=self.generator, device=self.device
+        )[0]
 
         # randomly put 2 or 4 (prob: 2->0.9, 4->0.1)
         prob = torch.tensor([0.9, 0.1]).to(device=self.device)
@@ -171,14 +177,18 @@ class Comp2048Board():
         if action == 0 or action == 1:
             # Sequential implementation of move.
             for i in range(4):
-            #     current_board[i, :] = self.shift_seq(shift_row_col=current_board[i, :], direction=action)
-                current_board[i, :] = self.combine_seq(current_row=current_board[i, :], direction=action, action=action)
+                #     current_board[i, :] = self.shift_seq(shift_row_col=current_board[i, :], direction=action)
+                current_board[i, :] = self.combine_seq(
+                    current_row=current_board[i, :], direction=action, action=action
+                )
         else:
             current_board = current_board.T
             # Sequential implementation of move.
             for i in range(4):
-            #     current_board[i, :] = self.shift_seq(shift_row_col=current_board[i, :], direction=action - 2)
-                current_board[i, :] = self.combine_seq(current_row=current_board[i, :], direction=action - 2, action=action)
+                #     current_board[i, :] = self.shift_seq(shift_row_col=current_board[i, :], direction=action - 2)
+                current_board[i, :] = self.combine_seq(
+                    current_row=current_board[i, :], direction=action - 2, action=action
+                )
             current_board = current_board.T
 
         self.board_cache[action, :, :] = current_board
@@ -201,7 +211,9 @@ class Comp2048Board():
         """
         dim = (action < 2) * 1
         descending = action % 2 == 0
-        index = torch.sort((board != 0) * 1, dim=dim, descending=descending, stable=True)[1]
+        index = torch.sort(
+            (board != 0) * 1, dim=dim, descending=descending, stable=True
+        )[1]
         return board.gather(dim, index)
 
     def combine(self, board, action):
@@ -211,7 +223,6 @@ class Comp2048Board():
         delimiters = -torch.ones((4, 1), dtype=int, device=self.device)
         board = torch.cat((zeros, board, delimiters), dim=1)
         values, count = torch.unique_consecutive(board, return_counts=True)
-
 
         if action >= 2:
             board = board.T
@@ -247,7 +258,9 @@ class Comp2048Board():
             num = current_row[i]
             next_num = current_row[i + 1]
             if num == next_num != 0:
-                self.score_cache[action] += 2 * num  # store the score gained from each action
+                self.score_cache[action] += (
+                    2 * num
+                )  # store the score gained from each action
                 combined[j] = num * 2
                 i += 2
                 j += 1
@@ -259,13 +272,12 @@ class Comp2048Board():
             combined[j] = current_row[i]
         # Get rid of extra empty cells
         # combined = self.shift(combined, 0)
-        if (direction == 1):
+        if direction == 1:
             combined = torch.flip(combined, dims=(0,))
         return combined
 
     def get_legal_moves(self):
-        """Returns all the legal moves
-        """
+        """Returns all the legal moves"""
         legal_moves = []
         for i in range(4):
             valid, _ = self.move(action=i)
@@ -279,14 +291,15 @@ class Comp2048Board():
         return True
 
     def execute_move(self, action, player):
-        """Perform the given move on the board; flips pieces as necessary.
-        """
+        """Perform the given move on the board; flips pieces as necessary."""
         if player == -1:
             player = 0
         # self.board = self.board_cache[action, :, :].detach().clone()
         _, self.board = self.move(action=action)
 
-        self.score[player] += self.score_cache[action]  # add score to the corresponding player
+        self.score[player] += self.score_cache[
+            action
+        ]  # add score to the corresponding player
         self.add_random_tile()  # add a random tile
 
         # reset the board and score cache

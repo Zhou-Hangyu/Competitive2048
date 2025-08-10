@@ -7,7 +7,7 @@ from tqdm import tqdm
 log = logging.getLogger(__name__)
 
 
-class Arena():
+class Arena:
     """
     An Arena class where any 2 agents can be pit against each other.
     """
@@ -47,18 +47,29 @@ class Arena():
                 assert self.display
                 print("Turn ", str(it), "Player ", str(curPlayer))
                 self.display(board, score)
-            action = players[curPlayer + 1](self.game.getCanonicalForm(board, curPlayer), score)
+            action = players[curPlayer + 1](
+                self.game.getCanonicalForm(board, curPlayer), score
+            )
 
-            valids = self.game.getValidMoves(self.game.getCanonicalForm(board, curPlayer), score, 1)
+            valids = self.game.getValidMoves(
+                self.game.getCanonicalForm(board, curPlayer), score, 1
+            )
 
             if valids[action] == 0:
-                log.error(f'Action {action} is not valid!')
-                log.debug(f'valids = {valids}')
+                log.error(f"Action {action} is not valid!")
+                log.debug(f"valids = {valids}")
                 assert valids[action] > 0
-            board, score, curPlayer = self.game.getNextState(board, score, curPlayer, action)
+            board, score, curPlayer = self.game.getNextState(
+                board, score, curPlayer, action
+            )
         if verbose:
             assert self.display
-            print("Game over: Turn ", str(it), "Result ", str(self.game.getGameEnded(board, score, 1)))
+            print(
+                "Game over: Turn ",
+                str(it),
+                "Result ",
+                str(self.game.getGameEnded(board, score, 1)),
+            )
             self.display(board, score)
         return curPlayer * self.game.getGameEnded(board, score, curPlayer)
 

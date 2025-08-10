@@ -1,0 +1,9 @@
+README.md
+pyproject.toml
+comp2048/__init__.py
+comp2048/env.py
+competitive2048.egg-info/PKG-INFO
+competitive2048.egg-info/SOURCES.txt
+competitive2048.egg-info/dependency_links.txt
+competitive2048.egg-info/requires.txt
+competitive2048.egg-info/top_level.txt

@@ -1,4 +1,4 @@
-'''
+"""
 Citation:
 @misc{thakoor2016learning,
   title={Learning to play othello without human knowledge},
@@ -6,12 +6,12 @@ Citation:
   year={2016},
   publisher={Stanford University, Final Project Report}
 }
-'''
+"""
 
 import torch
 
 
-class RandomPlayer():
+class RandomPlayer:
     def __init__(self, game):
         self.game = game
 
@@ -23,7 +23,7 @@ class RandomPlayer():
         return a
 
 
-class HumanComp2048Player():
+class HumanComp2048Player:
     def __init__(self, game):
         self.game = game
 
@@ -41,11 +41,12 @@ class HumanComp2048Player():
                         break
                 except ValueError:
                     # Input needs to be an integer
-                    'Invalid integer'
-            print('Invalid move, please input a move within 0, 1, 2, 3')
+                    "Invalid integer"
+            print("Invalid move, please input a move within 0, 1, 2, 3")
         return input_move
 
-class GreedyComp2048Player():
+
+class GreedyComp2048Player:
     def __init__(self, game):
         self.game = game
 
